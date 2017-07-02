@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Aaron's Twitch Viewer</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <main>
+    <div class="text-center">
+      <p><h2>Aaron's "Use the Twitchtv JSON API" Project</h2></p>
+      <p><h3>Free Code Camp Intermediate Front End Development Project</h3></p>
+    </div>
+    <!--Header for viewer -->
+    <div id="viewbox" class="col-sm-8 col-sm-offset-2">Twitch Streamers</div>
+
+    <!--Table to display users -->
+    <div id="users" class="col-sm-8 col-sm-offset-2">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>
+              <h2>Username</h2></th>
+            <th>
+              <h2>Status</h2></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Free Code Camp</b></td>
+            <td><a href="https://www.twitch.tv/freecodecamp" target="_blank" id="fccStatus"></a></td>
+          </tr>
+          <tbody id="followerInfo"></tbody>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bottom block for style -->
+    <div id="bottomBlock" class="col-sm-8 col-sm-offset-2"></div>
+  </main>
+</body>
+
+</html>
+
+<script>
+  $.ajax({
+    type: 'GET',
+    url: 'https://api.twitch.tv/kraken/streams/freecodecamp',
+    headers: {
+      "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
+    },
+    success: function(data1) {
+      //fcc offline
+      if (data1.stream === null) {
+        $('#fccStatus').html('Free Code Camp is Offline');
+      }
+      //fcc online
+      else {
+        $('#fccStatus').html('Free Code Camp is LIVE!');
+      }
+    }
+  });
+
+  $.ajax({
+    type: 'GET',
+    url: 'https://api.twitch.tv/kraken/users/freecodecamp/follows/channels',
+    headers: {
+      "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
+    },
+    success: function(data2) {
+      console.log(data2.follows);
+      for (var i = 0; i < data2.follows.length; i++) {
+        //get display name
+        var displayName = data2.follows[i].channel.display_name;
+        var status = data2.follows[i].channel.status;
+
+        $('#followerInfo').prepend('<tr><td><b>' + displayName + '</td></b>' + '<td>' + status + '</td></tr>');
+      }
+    }
+  });
+
+  var deletedFollowers = ['brunofin', 'comster404'];
+  for (var i = 0; i < deletedFollowers.length; i++) {
+    $.ajax({
+      type: "GET",
+      url: "https://api.twitch.tv/kraken/streams/" + deletedFollowers[i],
+      headers: {
+        'Client-ID': '96pja9qd2yrf50bstm3mvbwrpmnzlg'
+      },
+      error: function(data3) {
+        var displayName = data3.statusText;
+        var status = data3.status;
+        $("#followerInfo").prepend("<tr><td><b>" + displayName + "</b></td>" + "<td>" + status + "</td></tr>");
+      }
+    });
+  }
+</script>

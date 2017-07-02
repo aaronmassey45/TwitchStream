@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css?family=Black+Ops+One|Carter+One|Sunshiney|Sue+Ellen+Francisco");
+html, body, main {
+  background-color: #D2B887
+}
+#viewbox {
+  background-color: black;
+  color: white;
+  padding: 15px;
+  margin-top: 15px;
+  font-size: 35px;
+  font-family: 'Black Ops One', cursive;
+}
+#users {
+  background-color: grey;
+  color: black;
+  margin-top: 3px;
+  font-size: 20px;
+  font-family: 'Sunshiney', cursive;
+}
+#users h2 {
+  font-family: 'Carter One', cursive;
+}
+#bottomBlock {
+  background-color: black;
+  color: white;
+  padding: 8px;
+  margin-top: 3px;
+}
+#fccStatus {
+  font-size: 25px;
+  color: black;
+}
