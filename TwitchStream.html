@@ -8,98 +8,161 @@
   <title>Aaron's Twitch Viewer</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 
 <body>
   <main>
-    <div class="text-center">
-      <p><h2>Aaron's "Use the Twitchtv JSON API" Project</h2></p>
-      <p><h3>Free Code Camp Intermediate Front End Development Project</h3></p>
-    </div>
     <!--Header for viewer -->
-    <div id="viewbox" class="col-sm-8 col-sm-offset-2">Twitch Streamers</div>
+    <div id="viewbox" class="col-sm-8 col-sm-offset-2">
+      <nav class="navbar">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <span class="title">Twitch Streamers</span>
+          </div>
+          <form class="navbar-form navbar-left">
+            <div class="input-group">
+              <input type="text" class="form-control search" placeholder="Search">
+              <div class="input-group-btn">
+                <button class="btn btn-default searchBtn"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+            </div>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a class="dropdown-toggle changeToggle" data-toggle="dropdown" href="#">All<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li class="all"><a href="#">All</a></li>
+                <li class="online"><a href="#">Online</a></li>
+                <li class="offline"><a href="#">Offline</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
 
     <!--Table to display users -->
     <div id="users" class="col-sm-8 col-sm-offset-2">
       <table class="table">
         <thead>
-          <tr>
-            <th>
-              <h2>Username</h2></th>
-            <th>
-              <h2>Status</h2></th>
+          <tr class="text-center">
+            <th><h2>Logo</h2></th>
+            <th><h2>Username</h2></th>
+            <th><h2>Status</h2></th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><b>Free Code Camp</b></td>
-            <td><a href="https://www.twitch.tv/freecodecamp" target="_blank" id="fccStatus"></a></td>
-          </tr>
-          <tbody id="followerInfo"></tbody>
-        </tbody>
+        <tbody id="streamers"></tbody>
+        <tbody id="online"></tbody>
+        <tbody id="offline"></tbody>
       </table>
     </div>
 
-    <!-- Bottom block for style -->
-    <div id="bottomBlock" class="col-sm-8 col-sm-offset-2"></div>
+    <!-- Bottom block -->
+    <div id="bottomBlock" class="text-center col-sm-8 col-sm-offset-2">
+      <p><b>Coded by Swole Papi</b></p>
+      <p><b>Free Code Camp Advanced Front End Project</b></p>
+    </div>
   </main>
 </body>
 
 </html>
 
 <script>
-  $.ajax({
-    type: 'GET',
-    url: 'https://api.twitch.tv/kraken/streams/freecodecamp',
-    headers: {
-      "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
-    },
-    success: function(data1) {
-      //fcc offline
-      if (data1.stream === null) {
-        $('#fccStatus').html('Free Code Camp is Offline');
-      }
-      //fcc online
-      else {
-        $('#fccStatus').html('Free Code Camp is LIVE!');
-      }
-    }
-  });
+  var streamers = ["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas"]; //starting array of channels to check
+  var logo; //variable to store logo
 
-  $.ajax({
-    type: 'GET',
-    url: 'https://api.twitch.tv/kraken/users/freecodecamp/follows/channels',
-    headers: {
-      "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
-    },
-    success: function(data2) {
-      console.log(data2.follows);
-      for (var i = 0; i < data2.follows.length; i++) {
-        //get display name
-        var displayName = data2.follows[i].channel.display_name;
-        var status = data2.follows[i].channel.status;
+  $(document).ready(function() {
+    $("#offline, #online").hide(); //hides tables for offline and online channels
 
-        $('#followerInfo').prepend('<tr><td><b>' + displayName + '</td></b>' + '<td>' + status + '</td></tr>');
+    $(".all").click(function() { //filter to show all channels in streamers array
+      $("#offline, #online").hide();
+      $("#streamers").show();
+      $(".changeToggle").html("All <span class='caret'>");
+    });
+    $(".online").click(function() { //filter to show online channels
+      $("#streamers, #offline").hide();
+      $("#online").show();
+      $(".changeToggle").html("Online <span class='caret'>");
+    });
+    $(".offline").click(function() { //filter to show offline channels
+      $("#streamers, #online").hide();
+      $("#offline").show();
+      $(".changeToggle").html("Offline <span class='caret'>");
+    });
+
+    $(".searchBtn").click(function(event) { //logic for searching for channels
+      event.preventDefault();
+      var search = $(".search").val(); //stores the value of typed input
+
+      if (streamers.includes(search)) { //if that channel is in streamers array
+        alert("That user is already on your list!");
       }
-    }
-  });
-
-  var deletedFollowers = ['brunofin', 'comster404'];
-  for (var i = 0; i < deletedFollowers.length; i++) {
-    $.ajax({
-      type: "GET",
-      url: "https://api.twitch.tv/kraken/streams/" + deletedFollowers[i],
-      headers: {
-        'Client-ID': '96pja9qd2yrf50bstm3mvbwrpmnzlg'
-      },
-      error: function(data3) {
-        var displayName = data3.statusText;
-        var status = data3.status;
-        $("#followerInfo").prepend("<tr><td><b>" + displayName + "</b></td>" + "<td>" + status + "</td></tr>");
+      else { //if not add to list
+        streamers.push(search);
+        $.ajax({ //ajax call to see if channel is streaming
+          type: 'GET',
+          url: 'https://api.twitch.tv/kraken/streams/' + search,
+          headers: {
+            "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
+          },
+          success: function(data3) {
+            var displayName = search;
+            var url = 'https://wind-bow.gomix.me/twitch-api/channels/' + search + '?callback=?';
+            $.getJSON(url, function(data4) { //gets other data from channel
+              if (data4.logo === null) { //dummy image if there is no logo
+                logo = 'https://dummyimage.com/200x200/000/fff.png&text=:(';
+              } else { //if there is a logo, display it
+                logo = data4.logo;
+              }
+              //console.log(data2);
+              if (data4.error == "Not Found") { //if the user does not exist
+                $("#streamers, #offline").prepend("<tr><td><img src='https://dummyimage.com/200x200/000/fff.png&text=:('/></td><td><b>" + displayName + "</b></td><td>This user does not exist!</td></tr>");
+              } else if (data3.stream === null) { //if the channel is streaming
+                $("#streamers, #offline").prepend("<tr><td><img src='" + logo + "'/></td><td><b>" + displayName + "</b></td><td><a href='https://www.twitch.tv/" + displayName + "' target='_blank'>" + displayName +
+                  " is currently Offline</a></td></tr>");
+              } else { //if the channel exists but is not streaming
+                $("#streamers, #online").prepend("<tr class='bggreen'><td><img src='" + data4.logo + "'/></td><td><b>" + displayName + "</b></td><td><a href='https://www.twitch.tv/" + displayName + "' target='_blank'>" + displayName +
+                  " is online and currently streaming " + data3.stream.game + "</a></td></tr>");
+              }
+            });
+          }
+        });
       }
     });
+  });
+
+  for (var i = 0; i < streamers.length; i++) { //inital table by looping through streamers
+    (function(i) {
+      $.ajax({
+        type: 'GET',
+        url: 'https://api.twitch.tv/kraken/streams/' + streamers[i],
+        headers: {
+          "Client-ID": "96pja9qd2yrf50bstm3mvbwrpmnzlg"
+        },
+        success: function(data) {
+          var displayName = streamers[i];
+          var url = 'https://wind-bow.gomix.me/twitch-api/channels/' + streamers[i] + '?callback=?';
+          $.getJSON(url, function(data2) {
+            if (data2.logo === null) {
+              logo = 'https://dummyimage.com/200x200/000/fff.png&text=:(';
+            } else {
+              logo = data2.logo;
+            }
+            //console.log(data2);
+            if (data2.error == "Not Found") {
+              $("#streamers, #offline").prepend("<tr><td><img src='https://dummyimage.com/200x200/000/fff.png&text=:('/></td><td><b>" + displayName + "</b></td><td>This user does not exist!</td></tr>");
+            } else if (data.stream === null) {
+              $("#streamers, #offline").prepend("<tr><td><img src='" + logo + "'/></td><td><b>" + displayName + "</b></td><td><a href='https://www.twitch.tv/" + displayName + "' target='_blank'>" + displayName +
+                " is currently Offline</a></td></tr>");
+            } else {
+              $("#streamers, #online").prepend("<tr class='bggreen'><td><img src='" + data2.logo + "'/></td><td><b>" + displayName + "</b></td><td><a href='https://www.twitch.tv/" + displayName + "' target='_blank'>" + displayName +
+                " is online and currently streaming " + data.stream.game + "</a></td></tr>");
+            }
+          });
+        }
+      });
+    })(i);
   }
 </script>

@@ -1,32 +1,63 @@
-@import url("https://fonts.googleapis.com/css?family=Black+Ops+One|Carter+One|Sunshiney|Sue+Ellen+Francisco");
+@import url("https://fonts.googleapis.com/css?family=Abril+Fatface|Black+Ops+One|Oswald");
 html, body, main {
   background-color: #D2B887
 }
+
 #viewbox {
   background-color: black;
   color: white;
   padding: 15px;
   margin-top: 15px;
-  font-size: 35px;
   font-family: 'Black Ops One', cursive;
+  position: relative;
 }
+
+.title {
+  font-size: 35px;
+}
+
+.nav {
+  color: white;
+}
+
 #users {
   background-color: grey;
   color: black;
   margin-top: 3px;
   font-size: 20px;
-  font-family: 'Sunshiney', cursive;
+  font-family: 'Oswald', sans-serif;
 }
+
 #users h2 {
-  font-family: 'Carter One', cursive;
+  font-family: 'Abril Fatface', cursive;
 }
+
 #bottomBlock {
   background-color: black;
   color: white;
   padding: 8px;
   margin-top: 3px;
 }
-#fccStatus {
-  font-size: 25px;
+
+a:link, a:active, a:hover {
   color: black;
+}
+
+.bggreen {
+  background-color: lightgreen;
+}
+
+body img {
+  height: 50px;
+  border-radius: 50%;
+}
+
+nav .navbar-nav {
+    background-color: white;
+    color: black;
+  }
+
+.navbar-nav .open .dropdown-menu>li>a, .navbar-nav .open .dropdown-menu {
+    background-color: white;
+    color: black;
 }
